@@ -78,9 +78,10 @@ export function GuestWheel({ open, onOpenChange }: { open: boolean; onOpenChange
       const current = ((rotation % 360) + 360) % 360;
       const delta = ((target - current) % 360 + 360) % 360 + 360 * 6;
       const started = performance.now();
-      const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 5000;
+      // Always animate: the spin itself is the feature, even when the device asks for reduced motion.
+      const duration = 5000;
       const animate = (now: number) => {
-        const progress = duration === 0 ? 1 : Math.min(1, (now - started) / duration);
+        const progress = Math.min(1, (now - started) / duration);
         setRotation(rotation + delta * (1 - Math.pow(1 - progress, 4)));
         if (progress < 1) frame.current = requestAnimationFrame(animate);
         else { setWinner(index); setCode(result.code ?? null); setBusy(false); spinning.current = false; }
